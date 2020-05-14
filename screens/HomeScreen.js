@@ -75,7 +75,11 @@ export default function HomeScreen(props) {
       <View style={{ height: Platform.OS === 'ios' ? headerHeight : headerHeight - 24}}/>
       
       <View style={{ flex:1, justifyContent: 'center', backgroundColor:'#fff' }}>
-        <View style={{height: Dimensions.get('window').height - 400, margin: 30,borderRadius: 20, alignItems: 'center', backgroundColor: '#AA4139'}}>
+        <View style={{height: Dimensions.get('window').height - 400, margin: 30,borderRadius: 20, alignItems: 'center', backgroundColor: '#AA4139',     shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,}}>
           <Text style={styles.itemText}>{questionsList[0]}</Text>
           <Text style={styles.itemText}>{answersList[0]}</Text>
 
@@ -105,7 +109,12 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     height: Dimensions.get('window').width / numColumns,
-    borderRadius: 20
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
   },
   itemText: {
     color: '#fff',

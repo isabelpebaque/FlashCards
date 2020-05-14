@@ -8,18 +8,27 @@ export default function NewDeckScreen() {
   const [answer, setAnswer] = useState('');
   const [cards, setCards] = useState({});
   
-  const addCard = (question, answer) => {
-
+  const addCard = () => {
     setCards({...cards, [question] : answer});
+
+    // Clear question and answer textinput fields
+    setQuestion('');
+    setAnswer('');
   }
 
-  const saveDeck = (name, question, answer) => {
-    addToFirebase(name, question, answer);
+  const saveDeck = () => {
+    addToFirebase();
+
+    // Clear textinput fields and clear cards
+    setDeckName('');
+    setQuestion('');
+    setAnswer('');
+    setCards({});
   }
 
-  const addToFirebase = (name, question, answer) => {
-    firebase.database().ref('allDecks/').child(name).set({
-      key: name,
+  const addToFirebase = () => {
+    firebase.database().ref('allDecks/').child(deckName).set({
+      key: deckName,
       cards
     });
   }
@@ -27,45 +36,48 @@ export default function NewDeckScreen() {
 
   return (
     <SafeAreaView style={{flex:1}}>
-      <View style={{alignItems: 'center', marginTop: 20, marginBottom: 20}}>
-        <Text style={ styles.header }>Add new deck!</Text>
+      <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
+        <Text style={ styles.header }>Add a new deck!</Text>
       </View>
-      <View style={{ marginLeft: 20, marginRight: 20, marginBottom: 10 }}>
+      <View style={{flex:2, justifyContent: 'center' }}>
         <Text style={ styles.subtitle }>Name:</Text>
         <TextInput
-          style={styles.textInput}
+          style={styles.nameInput}
           onChangeText={text => setDeckName(text)}
           value={deckName}
         />  
       </View>
 
-      <View style={{ marginLeft: 20, marginRight: 20, marginBottom: 10  }}>
-        <Text style={ styles.subtitle}>Question:</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={text => setQuestion(text)}
-          value={question}
-        />  
+      <View style={{flex:4, flexDirection:'row', justifyContent:'space-evenly'}}>
+        <View>
+          <Text style={ styles.subtitleCard }>Question:</Text>
+          <TextInput
+            style={styles.cardInput}
+            onChangeText={text => setQuestion(text)}
+            value={question}
+            multiline={true}
+          />  
+        </View>
+
+        <View>
+          <Text style={ styles.subtitleCard }>Answer:</Text>
+          <TextInput
+            style={styles.cardInput}
+            onChangeText={text => setAnswer(text)}
+            value={answer}
+            multiline={true}
+          />    
+        </View>
       </View>
 
-      <View style={{ marginLeft: 20, marginRight: 20, marginBottom: 10  }}>
-        <Text style={ styles.subtitle }>Answer:</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={text => setAnswer(text)}
-          value={answer}
-        />    
-      </View>
-
-      <View style={{ flexDirection:'row', justifyContent: 'center'}}>
-        <Button 
-          title={'Save Deck'}
-          onPress={() => saveDeck(deckName, question, answer)}
-        />
-
+      <View style={{flex: 4, justifyContent: 'center'}}>
         <Button 
           title={'New card'}
-          onPress={() => addCard(question, answer)}
+          onPress={() => addCard()}
+        />
+        <Button 
+          title={'Done'}
+          onPress={() => saveDeck()}
         />
       </View>
     </SafeAreaView>
@@ -78,12 +90,38 @@ const styles = StyleSheet.create({
   },
   subtitle:{
     fontSize: 15,
-    marginBottom: 5
+    marginBottom: 5,
+    marginLeft: 15
   },
-  textInput: {
-    paddingLeft: 10, height: 40,
-    width: Dimensions.get('window').width - 40,
+  subtitleCard:{
+    fontSize: 15,
+    marginBottom: 5,
+  },
+  nameInput: {
+    marginLeft: 15,
+    paddingLeft: 10, 
+    height: 40,
+    width: Dimensions.get('window').width - 30,
     backgroundColor: '#fff',
-    borderRadius: 15
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  cardInput:{
+    padding: 10,
+    paddingTop: 30,
+    height: 200,
+    width: Dimensions.get('window').width / 2.3,
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    textAlign: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
   }
 })
