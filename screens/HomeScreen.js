@@ -29,7 +29,7 @@ export default function HomeScreen(props) {
       let valueArray = _.map(value, element => {
         return {...element};
       })
-      console.log('snap', valueArray);
+      // console.log('snap', valueArray);
       setDeckList(valueArray);
     });
   }
@@ -54,7 +54,7 @@ export default function HomeScreen(props) {
     const answers = Object.values(deck);
     setAnswersList(answers);
     
-    console.log(Object.values(deck));
+    // console.log(Object.values(deck));
   }
 
   return (

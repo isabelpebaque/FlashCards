@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import { Text, View, StyleSheet, SafeAreaView, TextInput, Dimensions, Button } from 'react-native';
 import firebase from './../firebase';
+import _ from 'lodash'
 
 export default function NewDeckScreen() {
   const [deckName, setDeckName] = useState('');
@@ -8,29 +9,55 @@ export default function NewDeckScreen() {
   const [answer, setAnswer] = useState('');
   const [cards, setCards] = useState({});
   
+  // Adds card into object list
   const addCard = () => {
-    setCards({...cards, [question] : answer});
-
-    // Clear question and answer textinput fields
-    setQuestion('');
-    setAnswer('');
+    if(checkInputEmpty()) {
+      alert('Cant add card to deck when inputs are empty');
+    } else {
+      setCards({...cards, [question] : answer});
+      clearInputFields();
+    }
   }
-
+  
+  // Saves deck to firebase
   const saveDeck = () => {
-    addToFirebase();
-
-    // Clear textinput fields and clear cards
-    setDeckName('');
-    setQuestion('');
-    setAnswer('');
-    setCards({});
+    if (answer !== '' && question !== '') {
+      alert('You need to add card before you can save')
+    } else {
+      addToFirebase();
+      clearAllInputFields();
+      setCards({});
+    }
   }
 
+  // Push new object into firebase database
   const addToFirebase = () => {
     firebase.database().ref('allDecks/').child(deckName).set({
       key: deckName,
       cards
     });
+  }
+
+  // Check if inputfields are empty
+  const checkInputEmpty= () => {
+    if (deckName === '' && question === '' && answer === '') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Clear question and answer inputfields
+  const clearInputFields = () => {
+    setQuestion('');
+    setAnswer('');
+  }
+
+  // CLear all inputfields
+  const clearAllInputFields = () => {
+    setDeckName('');
+    setQuestion('');
+    setAnswer('');
   }
   
 
@@ -42,7 +69,7 @@ export default function NewDeckScreen() {
       <View style={{flex:2, justifyContent: 'center' }}>
         <Text style={ styles.subtitle }>Name:</Text>
         <TextInput
-          style={styles.nameInput}
+          style={[styles.nameInput, styles.shadow]}
           onChangeText={text => setDeckName(text)}
           value={deckName}
         />  
@@ -52,7 +79,7 @@ export default function NewDeckScreen() {
         <View>
           <Text style={ styles.subtitleCard }>Question:</Text>
           <TextInput
-            style={styles.cardInput}
+            style={[styles.cardInput, styles.shadow]}
             onChangeText={text => setQuestion(text)}
             value={question}
             multiline={true}
@@ -62,7 +89,7 @@ export default function NewDeckScreen() {
         <View>
           <Text style={ styles.subtitleCard }>Answer:</Text>
           <TextInput
-            style={styles.cardInput}
+            style={[styles.cardInput, styles.shadow]}
             onChangeText={text => setAnswer(text)}
             value={answer}
             multiline={true}
@@ -71,14 +98,19 @@ export default function NewDeckScreen() {
       </View>
 
       <View style={{flex: 4, justifyContent: 'center'}}>
+
         <Button 
-          title={'New card'}
-          onPress={() => addCard()}
+        title={'Add card'}
+        onPress={() => addCard()}
         />
         <Button 
-          title={'Done'}
+          title={'Save'}
           onPress={() => saveDeck()}
         />
+
+      </View>
+        <View style={{ flex: 1, alignItems: 'center'}}>
+        <Text>Cards added to your deck: {_.size(cards)}</Text>
       </View>
     </SafeAreaView>
   );
@@ -104,11 +136,6 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width - 30,
     backgroundColor: '#fff',
     borderRadius: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 1,
   },
   cardInput:{
     padding: 10,
@@ -118,9 +145,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 15,
     textAlign: 'center',
+  },
+  shadow:{
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
+    shadowOpacity: 0.5,
     shadowRadius: 2,
     elevation: 1,
   }
