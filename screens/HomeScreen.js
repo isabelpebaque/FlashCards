@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, FlatList, Dimensions, Modal, TouchableOpacity, 
 import firebase from './../firebase';
 import _ from 'lodash'
 import { useHeaderHeight } from '@react-navigation/stack';
+import FlipCard from 'react-native-flip-card'
 
 
 const numColumns = 2;
@@ -58,7 +59,7 @@ export default function HomeScreen(props) {
   }
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1, backgroundColor: '#f6ecf5'}}>
     <FlatList
       data={deckList}
       style={styles.container}
@@ -72,24 +73,29 @@ export default function HomeScreen(props) {
     visible={modalVisible}
     >
 
-      <View style={{ height: Platform.OS === 'ios' ? headerHeight : headerHeight - 24}}/>
-      
+      <View style={{ height: Platform.OS === 'ios' ? headerHeight : headerHeight - 24}}/>      
       <View style={{ flex:1, justifyContent: 'center', backgroundColor:'#fff' }}>
-        <View style={{height: Dimensions.get('window').height - 400, margin: 30,borderRadius: 20, alignItems: 'center', backgroundColor: '#AA4139',     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 1,}}>
-          <Text style={styles.itemText}>{questionsList[0]}</Text>
-          <Text style={styles.itemText}>{answersList[0]}</Text>
 
-          <TouchableOpacity
-            onPress={() => {
-              setModalVisible(!modalVisible);
-            }}>
-            <Text style={styles.itemText}>Hide modal</Text>
-          </TouchableOpacity>
-        </View>
+        <FlipCard 
+          flipHorizontal={true}
+          flipVertical={false}
+          >
+          {/* Face Side */}
+          <View style={[styles.flipCard, styles.shadow]}>
+            <Text>QUESTION</Text>
+          </View>
+          {/* Back Side */}
+          <View style={[styles.flipCard, styles.shadow]}>
+            <Text>ANSWER</Text>
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}>
+              <Text >Hide modal</Text>
+            </TouchableOpacity>
+          </View>
+        </FlipCard>
+
       </View>
     </Modal>
 
@@ -119,4 +125,18 @@ const styles = StyleSheet.create({
   itemText: {
     color: '#fff',
   },
+  flipCard:{
+    height: Dimensions.get('window').height - 400,
+    margin: 30,
+    borderRadius: 20,
+    alignItems: 'center',
+    backgroundColor: '#AA4139',
+  },
+  shadow: {
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
+    shadowColor: '#000'
+  }
 });

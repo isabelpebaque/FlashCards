@@ -62,7 +62,7 @@ export default function NewDeckScreen() {
   
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex:1, backgroundColor: '#f6ecf5'}}>
       <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
         <Text style={ styles.header }>Add a new deck!</Text>
       </View>
