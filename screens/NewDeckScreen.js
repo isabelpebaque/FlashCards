@@ -7,17 +7,25 @@ export default function NewDeckScreen() {
   const [deckName, setDeckName] = useState('');
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
-  const [cards, setCards] = useState({});
+  const [cards, setCards] = useState([]);
+  const [number, setNumber] = useState(0);
+
   
   // Adds card into object list
   const addCard = () => {
     if(checkInputEmpty()) {
       alert('Cant add card to deck when inputs are empty');
     } else {
-      setCards({...cards, [question] : answer});
+      setCards({...cards, [number]: {
+        question : question,
+        answer: answer}
+      });
+      setNumber(num => num + 1);
       clearInputFields();
     }
+    
   }
+  console.log('NEW ADDED DECK: ', cards);
   
   // Saves deck to firebase
   const saveDeck = () => {
@@ -34,6 +42,7 @@ export default function NewDeckScreen() {
   const addToFirebase = () => {
     firebase.database().ref('allDecks/').child(deckName).set({
       key: deckName,
+      percentageDone: 0,
       cards
     });
   }

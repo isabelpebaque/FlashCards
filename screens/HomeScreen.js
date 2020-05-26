@@ -1,14 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, FlatList, Dimensions, Modal, TouchableOpacity, SafeAreaView, Platform } from 'react-native';
+
+// npm imports
 import firebase from './../firebase';
 import _ from 'lodash'
 import { useHeaderHeight } from '@react-navigation/stack';
-import FlipCard from 'react-native-flip-card'
+
+// components import
+import Flip from '../components/Flip'
 
 
 const numColumns = 2;
 
-export default function HomeScreen(props) {
+export default function HomeScreen() {
   useEffect(() => {
     fetchDecks();
   },[deckList]);
@@ -16,8 +20,9 @@ export default function HomeScreen(props) {
   const headerHeight = useHeaderHeight();
   const [deckList, setDeckList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [percentage, setPercentage] = useState(0);
   const [questionsList, setQuestionsList] = useState([]);
-  const [answersList, setAnswersList] = useState([]);
+  const [key, setKey] = useState('');
 
 
   
@@ -30,32 +35,30 @@ export default function HomeScreen(props) {
       let valueArray = _.map(value, element => {
         return {...element};
       })
-      // console.log('snap', valueArray);
       setDeckList(valueArray);
     });
   }
   
-  const Item = ({ title, deck}) => {
+  const Item = ({ title, deck, done}) => {
     return (
-      <TouchableOpacity onPress={() => showDeck(deck)} style={styles.item}>
+      <TouchableOpacity onPress={() => showDeck(deck, title)} style={styles.item}>
         <View >
             <Text style={styles.itemText}>{title}</Text>
+            <Text>Completed: {done}%</Text>
         </View>
       </TouchableOpacity>
     );
   }
 
-  // Function that takes object from pressed item and add all questions into an array and all answers into an array
-  const showDeck = (deck)=> {
+  // Function that takes object with all questions from pressed item and add into an array and all answers into an array
+  const showDeck = (deck, deckKey)=> {
     setModalVisible(!modalVisible)
     
-    const questions = Object.keys(deck);
-    setQuestionsList(questions);
+    setQuestionsList(deck);
+    setKey(deckKey);
     
-    const answers = Object.values(deck);
-    setAnswersList(answers);
     
-    // console.log(Object.values(deck));
+    console.log('DECK: ', deckKey);
   }
 
   return (
@@ -63,39 +66,22 @@ export default function HomeScreen(props) {
     <FlatList
       data={deckList}
       style={styles.container}
-      renderItem={({ item }) => <Item title={item.key} deck={item.cards} />}
+      renderItem={({ item }) => <Item title={item.key} deck={item.cards} done={item.percentageDone} />}
       keyExtractor={item => item.key}
       numColumns={numColumns}
     />
     <Modal
-    animationType="slide"
-    transparent={true}
-    visible={modalVisible}
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
     >
 
       <View style={{ height: Platform.OS === 'ios' ? headerHeight : headerHeight - 24}}/>      
       <View style={{ flex:1, justifyContent: 'center', backgroundColor:'#fff' }}>
 
-        <FlipCard 
-          flipHorizontal={true}
-          flipVertical={false}
-          >
-          {/* Face Side */}
-          <View style={[styles.flipCard, styles.shadow]}>
-            <Text>QUESTION</Text>
-          </View>
-          {/* Back Side */}
-          <View style={[styles.flipCard, styles.shadow]}>
-            <Text>ANSWER</Text>
-            <TouchableOpacity
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}>
-              <Text >Hide modal</Text>
-            </TouchableOpacity>
-          </View>
-        </FlipCard>
+        <Flip setModal={(bool) => setModalVisible(bool)} deck={questionsList} keyPercentage={key} />
 
+        
       </View>
     </Modal>
 

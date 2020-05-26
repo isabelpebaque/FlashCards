@@ -45,18 +45,19 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="FlashCards" 
-                      component={Root} 
-                      options={{
-                        title: 'FlashCards',
-                        headerStyle: {
-                          backgroundColor: '#FFF',
-                        },
-                        headerTintColor: '#924E8F',
-                        headerTitleStyle: {
-                          fontWeight: 'bold',
-                        },
-                      }}/>
+        <Stack.Screen 
+          name="FlashCards" 
+          component={Root} 
+          options={{
+            title: 'FlashCards',
+            headerStyle: {
+              backgroundColor: '#FFF',
+            },
+            headerTintColor: '#924E8F',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+        }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
