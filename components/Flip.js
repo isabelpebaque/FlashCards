@@ -32,14 +32,16 @@ export default function Flip(props){
         {/* Face Side */}
         <View style={[styles.flipCardFront, styles.shadow]} >
           <Text>QUESTION {question}/{questionsList.length}</Text>
-          <Text style={{fontSize: 25}}>{card.question} {index}</Text>
+          <Text style={{fontSize: 25}}>{card.question}</Text>
           <Text style={{fontSize: 20}}>Tap to see the answer</Text>
         </View>
 
         {/* Back Side */}
         <View style={[styles.flipCardBack, styles.shadow]}>
           <Text>ANSWER</Text>
-          <Text style={{fontSize: 25}}>{card.answer}</Text>
+          <View style={{flex:1, justifyContent: 'center'}}>
+            <Text style={{fontSize: 25}}>{card.answer}</Text>
+          </View>
         </View>
       </FlipCard>
     )
@@ -132,8 +134,8 @@ const styles = StyleSheet.create({
     margin: 30,
     borderRadius: 20,
     alignItems: 'center',
-    backgroundColor: '#FFF',
-    justifyContent: 'space-between'
+    backgroundColor: '#d65f56',
+    // justifyContent: 'space-around'
   },
   shadow: {
     shadowOffset: { width: 0, height: 2 },

@@ -8,6 +8,7 @@ import { useHeaderHeight } from '@react-navigation/stack';
 
 // components import
 import Flip from '../components/Flip'
+import Intro from '../components/Intro'
 
 
 const numColumns = 2;
@@ -18,13 +19,15 @@ export default function HomeScreen() {
   },[deckList]);
   
   const headerHeight = useHeaderHeight();
+
   const [deckList, setDeckList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [percentage, setPercentage] = useState(0);
+  const [showApp, setShowApp] = useState(false);
   const [questionsList, setQuestionsList] = useState([]);
   const [key, setKey] = useState('');
 
-
+  console.log('show app? ', showApp);
+  
   
   // Fetching data from firebase
   const fetchDecks = () => {
@@ -39,12 +42,15 @@ export default function HomeScreen() {
     });
   }
   
+  // Render card for each item in list
   const Item = ({ title, deck, done}) => {
     return (
       <TouchableOpacity onPress={() => showDeck(deck, title)} style={styles.item}>
-        <View >
-            <Text style={styles.itemText}>{title}</Text>
-            <Text>Completed: {done}%</Text>
+        <View style={styles.cardTitle}>
+          <Text style={styles.itemText}>{title}</Text>
+        </View>
+        <View style={styles.cardBottomText}>
+          <Text>Completed: {done}%</Text>
         </View>
       </TouchableOpacity>
     );
@@ -57,37 +63,43 @@ export default function HomeScreen() {
     setQuestionsList(deck);
     setKey(deckKey);
     
-    
-    console.log('DECK: ', deckKey);
+  }
+  
+  const startApp = (bool) => {
+    setShowApp(bool);
   }
 
-  return (
-    <SafeAreaView style={{flex:1, backgroundColor: '#f6ecf5'}}>
-    <FlatList
-      data={deckList}
-      style={styles.container}
-      renderItem={({ item }) => <Item title={item.key} deck={item.cards} done={item.percentageDone} />}
-      keyExtractor={item => item.key}
-      numColumns={numColumns}
-    />
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={modalVisible}
-    >
-
-      <View style={{ height: Platform.OS === 'ios' ? headerHeight : headerHeight - 24}}/>      
-      <View style={{ flex:1, justifyContent: 'center', backgroundColor:'#fff' }}>
-
-        <Flip setModal={(bool) => setModalVisible(bool)} deck={questionsList} keyPercentage={key} />
-
-        
-      </View>
-    </Modal>
-
-  </SafeAreaView>
+  if (showApp) {
+    return <View style={{flex:1}}>
+              <FlatList
+                data={deckList}
+                style={styles.container}
+                renderItem={({ item }) => <Item title={item.key} deck={item.cards} done={item.percentageDone} />}
+                keyExtractor={item => item.key}
+                numColumns={numColumns}
+              />
     
-  );
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+              >
+                <View style={{ height: Platform.OS === 'ios' ? headerHeight : headerHeight - 24}}/> 
+    
+                <View style={{ flex:1, justifyContent: 'center', backgroundColor:'#fff' }}>
+                  <Flip 
+                    setModal={(bool) => setModalVisible(bool)} 
+                    deck={questionsList} 
+                    keyPercentage={key} 
+                  />
+                </View>
+                
+              </Modal>
+          </View>
+        
+  } else {
+    return <Intro show={(bool) => startApp(bool)}/>;
+  }
 }
 
 const styles = StyleSheet.create({
@@ -108,8 +120,17 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 1,
   },
+  cardTitle: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  cardBottomText: {
+    flex: 1,
+    justifyContent: 'flex-end'
+  },
   itemText: {
     color: '#fff',
+    fontSize:25,
   },
   flipCard:{
     height: Dimensions.get('window').height - 400,
