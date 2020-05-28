@@ -30,14 +30,14 @@ export default function Flip(props){
       flipVertical={false}
       >
         {/* Face Side */}
-        <View style={[styles.flipCardFront, styles.shadow]} >
+        <View style={[styles.flipCardFront, styles.shadow, {backgroundColor: props.color}]} >
           <Text>QUESTION {question}/{questionsList.length}</Text>
           <Text style={{fontSize: 25}}>{card.question}</Text>
           <Text style={{fontSize: 20}}>Tap to see the answer</Text>
         </View>
 
         {/* Back Side */}
-        <View style={[styles.flipCardBack, styles.shadow]}>
+        <View style={[styles.flipCardBack, styles.shadow, {backgroundColor: props.color}]}>
           <Text>ANSWER</Text>
           <View style={{flex:1, justifyContent: 'center'}}>
             <Text style={{fontSize: 25}}>{card.answer}</Text>
@@ -110,7 +110,7 @@ export default function Flip(props){
           onPress={() => {
             props.setModal(false)
           }}
-          style={{justifyContent: 'flex-end', flexDirection: 'row', marginRight: 15}}>
+          style={styles.close}>
           <AntDesign name="closecircleo" size={30} color="black" />
         </TouchableOpacity>
     </Swiper>
@@ -122,20 +122,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   flipCardFront:{
-    height: Dimensions.get('window').height - 400,
+    height: Dimensions.get('window').height - 300,
     margin: 30,
     borderRadius: 20,
     alignItems: 'center',
-    backgroundColor: '#AA4139',
     justifyContent: 'space-between'
   },
   flipCardBack:{
-    height: Dimensions.get('window').height - 400,
+    height: Dimensions.get('window').height - 300,
     margin: 30,
     borderRadius: 20,
     alignItems: 'center',
-    backgroundColor: '#d65f56',
-    // justifyContent: 'space-around'
   },
   shadow: {
     shadowOffset: { width: 0, height: 2 },
@@ -143,5 +140,10 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 1,
     shadowColor: '#000'
+  },
+  close:{
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    marginRight: 15
   }
 });

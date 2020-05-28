@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, FlatList, Dimensions, Modal, TouchableOpacity, SafeAreaView, Platform } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Dimensions, Modal, TouchableOpacity, Alert, Platform } from 'react-native';
+import { Octicons } from '@expo/vector-icons';
 
 // npm imports
 import firebase from './../firebase';
@@ -25,6 +26,7 @@ export default function HomeScreen() {
   const [showApp, setShowApp] = useState(false);
   const [questionsList, setQuestionsList] = useState([]);
   const [key, setKey] = useState('');
+  const [color, setColor] = useState('');
 
   console.log('show app? ', showApp);
   
@@ -41,27 +43,57 @@ export default function HomeScreen() {
       setDeckList(valueArray);
     });
   }
+
+  // Deletes specified object from database
+  const deleteFromFirebase = (name) => {
+    firebase.database().ref(`allDecks/${name}`).remove();
+  }
+
+  // Send user an alert before deleting from database
+  const removeDeck = (deckName) => {
+    
+    Alert.alert(
+      `Are you sure?`,
+      `This will delete your deck ${deckName}`,
+      [
+        { 
+          text: 'Yes', 
+          onPress:() => deleteFromFirebase(deckName),
+          style: 'destructive'
+        },
+        {
+          text: 'No',
+          onPress:() => console.log('Cancel pressed'),
+          style: "cancel"
+        },
+      ],
+      { cancelable: false }
+    );
+  }
+
   
   // Render card for each item in list
-  const Item = ({ title, deck, done}) => {
+  const Item = ({ title, deck, done, color}) => {
     return (
-      <TouchableOpacity onPress={() => showDeck(deck, title)} style={styles.item}>
+      <TouchableOpacity onPress={() => showDeck(deck, title, color)} style={[styles.item, {backgroundColor: color} ]}>
+        <TouchableOpacity onPress={() => removeDeck(title)} style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 10, paddingTop: 10 }}>
+          <Octicons name="trashcan" size={30} color="black" />
+        </TouchableOpacity>
         <View style={styles.cardTitle}>
-          <Text style={styles.itemText}>{title}</Text>
-        </View>
-        <View style={styles.cardBottomText}>
-          <Text>Completed: {done}%</Text>
+          <Text style={styles.headerText}>{title}</Text>
+          <Text style={styles.text}>Completed: {done}%</Text>
         </View>
       </TouchableOpacity>
     );
   }
 
   // Function that takes object with all questions from pressed item and add into an array and all answers into an array
-  const showDeck = (deck, deckKey)=> {
+  const showDeck = (deck, deckKey, color)=> {
     setModalVisible(!modalVisible)
     
     setQuestionsList(deck);
     setKey(deckKey);
+    setColor(color);
     
   }
   
@@ -70,13 +102,13 @@ export default function HomeScreen() {
   }
 
   if (showApp) {
-    return <View style={{flex:1}}>
+    return <View style={{flex:1, backgroundColor: '#fff'}}>
               <FlatList
                 data={deckList}
                 style={styles.container}
-                renderItem={({ item }) => <Item title={item.key} deck={item.cards} done={item.percentageDone} />}
+                renderItem={({ item }) => <Item title={item.key} deck={item.cards} done={item.percentageDone} color={item.color} />}
                 keyExtractor={item => item.key}
-                numColumns={numColumns}
+                numColumns={1}
               />
     
               <Modal
@@ -91,6 +123,7 @@ export default function HomeScreen() {
                     setModal={(bool) => setModalVisible(bool)} 
                     deck={questionsList} 
                     keyPercentage={key} 
+                    color={color}
                   />
                 </View>
                 
@@ -107,11 +140,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    backgroundColor: '#AA4139',
-    alignItems: 'center',
-    justifyContent: 'center',
     flex: 1,
     margin: 10,
+    paddingLeft: 10,
     height: Dimensions.get('window').width / numColumns,
     borderRadius: 20,
     shadowColor: '#000',
@@ -121,23 +152,22 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   cardTitle: {
-    flex: 1,
-    justifyContent: 'center'
+    flex:1 , 
+    justifyContent: 'center',
   },
-  cardBottomText: {
-    flex: 1,
-    justifyContent: 'flex-end'
+  headerText: {
+    fontSize: 35,
+    fontWeight: 'bold'
   },
-  itemText: {
-    color: '#fff',
-    fontSize:25,
+  text: {
+    fontSize: 20
   },
   flipCard:{
     height: Dimensions.get('window').height - 400,
     margin: 30,
     borderRadius: 20,
     alignItems: 'center',
-    backgroundColor: '#AA4139',
+    backgroundColor: '#5ce1e6',
   },
   shadow: {
     shadowOffset: { width: 0, height: 2 },
