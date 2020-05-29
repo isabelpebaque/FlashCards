@@ -17,7 +17,7 @@ const numColumns = 2;
 export default function HomeScreen() {
   useEffect(() => {
     fetchDecks();
-  },[deckList]);
+  },[]);
   
   const headerHeight = useHeaderHeight();
 

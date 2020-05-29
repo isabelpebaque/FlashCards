@@ -1,9 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Alert, Dimensions, Modal, TouchableOpacity, SafeAreaView, Platform } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, Alert, Dimensions, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
 // npm imports
-import _ from 'lodash'
 import FlipCard from 'react-native-flip-card'
 import Swiper from 'react-native-deck-swiper'
 import firebase from './../firebase';
@@ -94,6 +93,7 @@ export default function Flip(props){
 
   return(
     <Swiper
+      useViewOverflow={Platform.OS === 'ios'} 
       backgroundColor={'#fff'}
       onSwiped={() => console.log('you swiped')}
       onSwipedLeft={(item) => swipeLeft(item)}

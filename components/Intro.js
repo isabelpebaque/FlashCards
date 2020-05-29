@@ -12,19 +12,19 @@ export default function Intro(props){
   // Array with intro data
   const slides = [
     {
-      key: 1,
+      key: 'One',
       title: 'Welcome to FlashCards!',
       text: 'Start with choosing your deck',
       image: require('../assets/1.png'),
     },
     {
-      key: 2,
+      key: 'Two',
       title: 'Read the question',
       text: 'Tap the card to flip and see the answer',
       image: require('../assets/2.png'),
     },
     {
-      key: 3,
+      key: 'Three',
       title: 'Move on to next question',
       text: 'If you knew the answer swipe right, if not swipe left',
       image: require('../assets/3.png'),

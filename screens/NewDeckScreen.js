@@ -1,40 +1,84 @@
-import React, {useState} from 'react';
-import { Text, View, StyleSheet, SafeAreaView, TextInput, Dimensions, Button } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { Text, View, StyleSheet, SafeAreaView, TextInput, Dimensions, Button, TouchableOpacity, KeyboardAvoidingView, ToastAndroid, AlertIOS } from 'react-native';
+
+
+// Components import
+import NewFlip from '../components/NewFlip';
+import ColorBox from '../components/ColorBox';
+
+// Constants import
+import Colors from '../constants/Colors';
+
+// Npm imports
 import firebase from './../firebase';
 import _ from 'lodash'
+import Toast from 'react-native-root-toast';
 
-export default function NewDeckScreen() {
+
+export default function NewDeckScreen({ navigation }) {
+  
   const [deckName, setDeckName] = useState('');
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
   const [cards, setCards] = useState([]);
   const [number, setNumber] = useState(0);
+  const [color, setColor] = useState(Colors.blue);
+  const [toastMsg, setToastMsg] = useState('');
+
+  const colors =[
+    {
+      color: Colors.blue
+    },
+    {
+      color: Colors.turquoise
+    },
+    {
+      color: Colors.pink
+    },
+    {
+      color: Colors.purple
+    },
+    {
+      color: Colors.green
+    },
+    {
+      color: Colors.yellow
+    },
+    {
+      color: Colors.orange
+    },
+  ]
+
+  // Render colors
+  const renderlist = () => {
+    return colors.map(element => {
+      return (
+        <View style={{padding: 10}}>
+          <TouchableOpacity onPress={() => setColor(element.color)}>
+            <ColorBox color={element.color} key={element.color}/>
+          </TouchableOpacity>
+        </View>
+      );
+    });
+  };
 
   
   // Adds card into object list
-  const addCard = () => {
-    if(checkInputEmpty()) {
-      alert('Cant add card to deck when inputs are empty');
-    } else {
-      setCards({...cards, [number]: {
-        question : question,
-        answer: answer}
-      });
-      setNumber(num => num + 1);
-      clearInputFields();
+  const addCard = (question, answer) => {
+    setCards({...cards, [number]: {
+      question : question,
+      answer: answer
     }
+    });
     
+    setNumber(num => num + 1);
   }
-  console.log('NEW ADDED DECK: ', cards);
   
   // Saves deck to firebase
   const saveDeck = () => {
-    if (answer !== '' && question !== '') {
-      alert('You need to add card before you can save')
-    } else {
+    if(deckName !== '') {
       addToFirebase();
-      clearAllInputFields();
       setCards({});
+    } else {
+      notifyMessage('You have to add a name to your deck!');
     }
   }
 
@@ -43,86 +87,69 @@ export default function NewDeckScreen() {
     firebase.database().ref('allDecks/').child(deckName).set({
       key: deckName,
       percentageDone: 0,
+      color: color,
       cards
     });
+
+    setNumber(0);
+    navigation.navigate('Cards')
   }
 
-  // Check if inputfields are empty
-  const checkInputEmpty= () => {
-    if (deckName === '' && question === '' && answer === '') {
-      return true;
-    } else {
-      return false;
-    }
+  // Function that creates toast msg
+  const notifyMessage = (msg) => {
+    console.log('TOAST ', msg);
+    
+    Toast.show(msg, {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.CENTER,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
+    });
+    
   }
 
-  // Clear question and answer inputfields
-  const clearInputFields = () => {
-    setQuestion('');
-    setAnswer('');
-  }
-
-  // CLear all inputfields
-  const clearAllInputFields = () => {
-    setDeckName('');
-    setQuestion('');
-    setAnswer('');
-  }
-  
-
-  return (
-    <SafeAreaView style={{flex:1, backgroundColor: '#f6ecf5'}}>
-      <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
-        <Text style={ styles.header }>Add a new deck!</Text>
-      </View>
-      <View style={{flex:2, justifyContent: 'center' }}>
-        <Text style={ styles.subtitle }>Name:</Text>
-        <TextInput
-          style={[styles.nameInput, styles.shadow]}
-          onChangeText={text => setDeckName(text)}
-          value={deckName}
-        />  
-      </View>
-
-      <View style={{flex:4, flexDirection:'row', justifyContent:'space-evenly'}}>
-        <View>
-          <Text style={ styles.subtitleCard }>Question:</Text>
-          <TextInput
-            style={[styles.cardInput, styles.shadow]}
-            onChangeText={text => setQuestion(text)}
-            value={question}
-            multiline={true}
-          />  
-        </View>
-
-        <View>
-          <Text style={ styles.subtitleCard }>Answer:</Text>
-          <TextInput
-            style={[styles.cardInput, styles.shadow]}
-            onChangeText={text => setAnswer(text)}
-            value={answer}
-            multiline={true}
-          />    
-        </View>
-      </View>
-
-      <View style={{flex: 4, justifyContent: 'center'}}>
-
-        <Button 
-        title={'Add card'}
-        onPress={() => addCard()}
+   return (
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      style={{ flex: 1 }}>
+ 
+     <SafeAreaView style={{flex:1, backgroundColor: '#fff', justifyContent: "flex-end"}}>
+       <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
+         <Text style={ styles.header }>Add a new deck!</Text>
+       </View>
+       <View style={{flex:2, justifyContent: 'center' }}>
+         <TextInput
+          placeholder={'Name..'}
+           style={[styles.nameInput, styles.shadow]}
+           onChangeText={text => setDeckName(text)}
+           value={deckName}
+         />  
+         <View style={{flexDirection: 'row', justifyContent: 'center', paddingTop:10}}>
+           {renderlist()}
+         </View>
+       </View>
+ 
+ 
+       <View style={{flex:4, flexDirection:'row', justifyContent:'space-evenly'}}>
+         <NewFlip 
+          toast={(msg) => notifyMessage(msg)} 
+          color={color} style={styles.shadow} 
+          addQuestion={(questions, answer) => addCard(questions, answer)}
         />
-        <Button 
-          title={'Save'}
-          onPress={() => saveDeck()}
-        />
+       </View>
+ 
+       <View style={{flex: 1, justifyContent: 'center'}}>
+         <Button 
+           title={'Save'}
+           onPress={() => saveDeck()}
+         />
+       </View>
+      </SafeAreaView>
+     </KeyboardAvoidingView>
 
-      </View>
-        <View style={{ flex: 1, alignItems: 'center'}}>
-        <Text>Cards added to your deck: {_.size(cards)}</Text>
-      </View>
-    </SafeAreaView>
-  );
+   );   
 }
 
 const styles = StyleSheet.create({
