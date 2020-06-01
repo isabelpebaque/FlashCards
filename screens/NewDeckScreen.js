@@ -76,6 +76,7 @@ export default function NewDeckScreen({ navigation }) {
     if(deckName !== '') {
       addToFirebase();
       setCards({});
+      setDeckName('');
     } else {
       notifyMessage('You have to add a name to your deck!');
     }

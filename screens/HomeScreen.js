@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, FlatList, Dimensions, Modal, TouchableOpacity, Alert, Platform } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Dimensions, Modal, TouchableOpacity, Alert, Platform, Image } from 'react-native';
 import { Octicons } from '@expo/vector-icons';
 
 // npm imports
@@ -13,7 +13,7 @@ import Flip from '../components/Flip'
 
 const numColumns = 2;
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   useEffect(() => {
     fetchDecks();
   },[]);
@@ -22,16 +22,22 @@ export default function HomeScreen() {
 
   const [deckList, setDeckList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  // const [showApp, setShowApp] = useState(false);
   const [questionsList, setQuestionsList] = useState([]);
   const [key, setKey] = useState('');
   const [color, setColor] = useState('');
+  const [firstTimeText, setFirstTimeText] = useState(true);
   
   
   // Fetching data from firebase
   const fetchDecks = () => {
     firebase.database().ref('allDecks/').on('value',(snap)=>{
       let value = snap.val()
+
+      if (value === null) {
+        setFirstTimeText(true);
+      } else {
+        setFirstTimeText(false);
+      }
 
       // Transform object to array format for flatlist
       let valueArray = _.map(value, element => {
@@ -95,35 +101,48 @@ export default function HomeScreen() {
   }
   
 
-  return (
-    <View style={{flex:1, backgroundColor: '#fff'}}>
-      <FlatList
-        data={deckList}
-        style={styles.container}
-        renderItem={({ item }) => <Item title={item.key} deck={item.cards} done={item.percentageDone} color={item.color} />}
-        keyExtractor={item => item.key}
-        numColumns={1}
-      />
+  if (firstTimeText) {
+    return (
+      <View style={{flex:1,  alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFF'}}>
+        <Text style={{ textAlign: 'center', paddingHorizontal: 30}}>
+          You do not have any Decks yet, let's create one by adding a new Deck!
+        </Text>
+        <Image  style={styles.image} source={require('../assets/1.png')} />
+      </View>
+    )
+  } else {
+    return (
+      <View style={{flex:1, backgroundColor: '#fff'}}>
+        <FlatList
+          data={deckList}
+          style={styles.container}
+          renderItem={({ item }) => <Item title={item.key} deck={item.cards} done={item.percentageDone} color={item.color} />}
+          keyExtractor={item => item.key}
+          numColumns={1}
+        />
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-      >
-        <View style={{ height: Platform.OS === 'ios' ? headerHeight : headerHeight - 24}}/> 
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+        >
+          <View style={{ height: Platform.OS === 'ios' ? headerHeight : headerHeight - 24}}/> 
 
-        <View style={{ flex:1, justifyContent: 'center', backgroundColor:'#fff' }}>
-          <Flip 
-            setModal={(bool) => setModalVisible(bool)} 
-            deck={questionsList} 
-            keyPercentage={key} 
-            color={color}
-          />
-        </View>
-        
-      </Modal>
-    </View>
-  ) 
+          <View style={{ flex:1, justifyContent: 'center', backgroundColor:'#fff' }}>
+            <Flip 
+              setModal={(bool) => setModalVisible(bool)} 
+              deck={questionsList} 
+              keyPercentage={key} 
+              color={color}
+            />
+          </View>
+          
+        </Modal>
+      </View>
+    ) 
+
+  }
+
         
 
 }
@@ -168,5 +187,9 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 1,
     shadowColor: '#000'
+  },
+  image:{
+    height: Dimensions.get('window').height - 400,
+    width: Dimensions.get('window').height - 400,
   }
 });

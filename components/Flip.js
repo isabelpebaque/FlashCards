@@ -31,7 +31,7 @@ export default function Flip(props){
         {/* Face Side */}
         <View style={[styles.flipCardFront, styles.shadow, {backgroundColor: props.color}]} >
           <Text>QUESTION {question}/{questionsList.length}</Text>
-          <Text style={{fontSize: 25}}>{card.question}</Text>
+          <Text style={{fontSize: 25, textAlign: 'center'}}>{card.question}</Text>
           <Text style={{fontSize: 20}}>Tap to see the answer</Text>
         </View>
 
@@ -39,7 +39,7 @@ export default function Flip(props){
         <View style={[styles.flipCardBack, styles.shadow, {backgroundColor: props.color}]}>
           <Text>ANSWER</Text>
           <View style={{flex:1, justifyContent: 'center'}}>
-            <Text style={{fontSize: 25}}>{card.answer}</Text>
+            <Text style={{fontSize: 25, textAlign: 'center'}}>{card.answer}</Text>
           </View>
         </View>
       </FlipCard>
