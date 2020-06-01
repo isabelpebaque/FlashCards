@@ -1,13 +1,16 @@
-import React from 'react';
-import { StyleSheet, Text, View, Alert, Dimensions, TouchableOpacity } from 'react-native';
+import React, {useState} from 'react';
+import { StyleSheet, Text, View, Alert, Dimensions, TouchableOpacity, Modal } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
 // npm imports
 import FlipCard from 'react-native-flip-card'
 import Swiper from 'react-native-deck-swiper'
 import firebase from './../firebase';
+import Toast from 'react-native-root-toast';
 
 export default function Flip(props){
+
+  const [test, setTest] = useState(false);
 
   let questionsList = props.deck;
   let answers = 0;
@@ -61,26 +64,20 @@ export default function Flip(props){
     
     console.log('all cards swiped');
     Alert.alert(
+      'All done!',
       `You completed ${calculator(questionsList.length, answers)} % of the questions`,
-      'Do you wanna retry them?',
-      [
-        {
-          text: 'Yes',
-          onPress: () => props.setModal(false)
-          
-        },
-        {
-          text: 'No',
-          onPress: () => props.setModal(false),
-          style: "cancel"
-        },
-      ],
-      { cancelable: false }
+      [{
+        text: 'Ok',
+        onPress: () => props.setModal(false)
+      }]
     );
   };
 
   const swipeLeft = (item) => {
     console.log('You guessed wrong!', item); 
+    setTest(true);
+
+    
 
   };
   
@@ -92,6 +89,7 @@ export default function Flip(props){
   }
 
   return(
+    
     <Swiper
       useViewOverflow={Platform.OS === 'ios'} 
       backgroundColor={'#fff'}
@@ -104,7 +102,33 @@ export default function Flip(props){
       renderCard={renderCard}
       onSwipedAll={onSwipedAllCards}
       stackSize={questionsList.length}
-      stackSeparation={15}>
+      stackSeparation={15}
+      overlayLabels={{
+            left: {
+              title: <AntDesign name="close" size={55} color="red" />,
+              style: {
+                wrapper: {
+                  flexDirection: 'column',
+                  alignItems: 'flex-end',
+                  justifyContent: 'flex-start',
+                  marginTop: 30,
+                  marginLeft: -30
+                }
+              }
+            },
+            right: {
+              title: <AntDesign name="check" size={55} color="green" />,
+              style: {
+                wrapper: {
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  justifyContent: 'flex-start',
+                  marginTop: 30,
+                  marginLeft: 30
+                }
+              }
+            }
+          }}>
         
         <TouchableOpacity
           onPress={() => {

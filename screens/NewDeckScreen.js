@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import { Text, View, StyleSheet, SafeAreaView, TextInput, Dimensions, Button, TouchableOpacity, KeyboardAvoidingView, ScrollView, AlertIOS } from 'react-native';
+import React, {useState} from 'react';
+import { Text, View, StyleSheet, SafeAreaView, TextInput, Dimensions, Button, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
 
 
 // Components import
