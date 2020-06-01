@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { Text, View, StyleSheet, SafeAreaView, FlatList } from 'react-native';
+import React, {useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -9,11 +8,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 // Screen imports
 import HomeScreen from './screens/HomeScreen';
 import NewDeckScreen from './screens/NewDeckScreen';
+import Intro from './components/Intro';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export default function App() {
+  const [showApp, setShowApp] = useState(false);
+  console.log('show app? ', showApp);
 
   function Root(){
     return(
@@ -42,23 +44,32 @@ export default function App() {
     )
   }
 
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen 
-          name="FlashCards" 
-          component={Root} 
-          options={{
-            title: 'FlashCards',
-            headerStyle: {
-              backgroundColor: '#FFF',
-            },
-            headerTintColor: '#924E8F',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-        }}/>
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+  const startApp = (bool) => {
+    setShowApp(bool);
+  }
+
+  if (showApp) {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen 
+            name="FlashCards" 
+            component={Root} 
+            options={{
+              title: 'FlashCards',
+              headerStyle: {
+                backgroundColor: '#FFF',
+              },
+              headerTintColor: '#924E8F',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+          }}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+        
+  } else {
+    return <Intro show={(bool) => startApp(bool)}/>;
+  }
 }

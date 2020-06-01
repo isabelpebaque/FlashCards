@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Text, View, StyleSheet, SafeAreaView, TextInput, Dimensions, Button, TouchableOpacity, KeyboardAvoidingView, ToastAndroid, AlertIOS } from 'react-native';
+import { Text, View, StyleSheet, SafeAreaView, TextInput, Dimensions, Button, TouchableOpacity, KeyboardAvoidingView, ScrollView, AlertIOS } from 'react-native';
 
 
 // Components import
@@ -21,7 +21,6 @@ export default function NewDeckScreen({ navigation }) {
   const [cards, setCards] = useState([]);
   const [number, setNumber] = useState(0);
   const [color, setColor] = useState(Colors.blue);
-  const [toastMsg, setToastMsg] = useState('');
 
   const colors =[
     {
@@ -51,9 +50,9 @@ export default function NewDeckScreen({ navigation }) {
   const renderlist = () => {
     return colors.map(element => {
       return (
-        <View style={{padding: 10}}>
+        <View style={{padding: 10}} key={element.color}>
           <TouchableOpacity onPress={() => setColor(element.color)}>
-            <ColorBox color={element.color} key={element.color}/>
+            <ColorBox color={element.color}/>
           </TouchableOpacity>
         </View>
       );
@@ -111,50 +110,51 @@ export default function NewDeckScreen({ navigation }) {
   }
 
    return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      style={{ flex: 1 }}>
- 
-     <SafeAreaView style={{flex:1, backgroundColor: '#fff', justifyContent: "flex-end"}}>
-       <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
-         <Text style={ styles.header }>Add a new deck!</Text>
-       </View>
-       <View style={{flex:2, justifyContent: 'center' }}>
-         <TextInput
-          placeholder={'Name..'}
-           style={[styles.nameInput, styles.shadow]}
-           onChangeText={text => setDeckName(text)}
-           value={deckName}
-         />  
-         <View style={{flexDirection: 'row', justifyContent: 'center', paddingTop:10}}>
-           {renderlist()}
-         </View>
-       </View>
- 
- 
-       <View style={{flex:4, flexDirection:'row', justifyContent:'space-evenly'}}>
-         <NewFlip 
-          toast={(msg) => notifyMessage(msg)} 
-          color={color} style={styles.shadow} 
-          addQuestion={(questions, answer) => addCard(questions, answer)}
-        />
-       </View>
- 
-       <View style={{flex: 1, justifyContent: 'center'}}>
-         <Button 
-           title={'Save'}
-           onPress={() => saveDeck()}
-         />
-       </View>
-      </SafeAreaView>
-     </KeyboardAvoidingView>
-
+     <ScrollView style= {{ backgroundColor: '#FFF'}}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        style={{ flex: 1 }}>
+  
+        <SafeAreaView style={{flex:1, backgroundColor: '#fff', justifyContent: "flex-end"}}>
+          <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
+            <Text style={ styles.header }>Add a new deck!</Text>
+          </View>
+          <View style={{flex:2, justifyContent: 'center' }}>
+            <TextInput
+              placeholder={'Name..'}
+              style={[styles.nameInput, styles.shadow]}
+              onChangeText={text => setDeckName(text)}
+              value={deckName}
+            />  
+            <View style={{flexDirection: 'row', justifyContent: 'center', paddingTop:10}}>
+              {renderlist()}
+            </View>
+          </View>
+    
+          <View style={{flex:4, flexDirection:'row', justifyContent:'space-evenly'}}>
+            <NewFlip 
+              toast={(msg) => notifyMessage(msg)} 
+              color={color} style={styles.shadow} 
+              addQuestion={(questions, answer) => addCard(questions, answer)}
+            />
+          </View>
+    
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <Button 
+              title={'Save'}
+              onPress={() => saveDeck()}
+            />
+          </View>
+        </SafeAreaView>
+      </KeyboardAvoidingView> 
+     </ScrollView>
    );   
 }
 
 const styles = StyleSheet.create({
   header: {
-    fontSize: 20
+    fontSize: 20,
+    paddingVertical: 10
   },
   subtitle:{
     fontSize: 15,

@@ -9,7 +9,6 @@ import { useHeaderHeight } from '@react-navigation/stack';
 
 // components import
 import Flip from '../components/Flip'
-import Intro from '../components/Intro'
 
 
 const numColumns = 2;
@@ -23,12 +22,10 @@ export default function HomeScreen() {
 
   const [deckList, setDeckList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [showApp, setShowApp] = useState(false);
+  // const [showApp, setShowApp] = useState(false);
   const [questionsList, setQuestionsList] = useState([]);
   const [key, setKey] = useState('');
   const [color, setColor] = useState('');
-
-  console.log('show app? ', showApp);
   
   
   // Fetching data from firebase
@@ -97,42 +94,38 @@ export default function HomeScreen() {
     
   }
   
-  const startApp = (bool) => {
-    setShowApp(bool);
-  }
 
-  if (showApp) {
-    return <View style={{flex:1, backgroundColor: '#fff'}}>
-              <FlatList
-                data={deckList}
-                style={styles.container}
-                renderItem={({ item }) => <Item title={item.key} deck={item.cards} done={item.percentageDone} color={item.color} />}
-                keyExtractor={item => item.key}
-                numColumns={1}
-              />
-    
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-              >
-                <View style={{ height: Platform.OS === 'ios' ? headerHeight : headerHeight - 24}}/> 
-    
-                <View style={{ flex:1, justifyContent: 'center', backgroundColor:'#fff' }}>
-                  <Flip 
-                    setModal={(bool) => setModalVisible(bool)} 
-                    deck={questionsList} 
-                    keyPercentage={key} 
-                    color={color}
-                  />
-                </View>
-                
-              </Modal>
-          </View>
+  return (
+    <View style={{flex:1, backgroundColor: '#fff'}}>
+      <FlatList
+        data={deckList}
+        style={styles.container}
+        renderItem={({ item }) => <Item title={item.key} deck={item.cards} done={item.percentageDone} color={item.color} />}
+        keyExtractor={item => item.key}
+        numColumns={1}
+      />
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+      >
+        <View style={{ height: Platform.OS === 'ios' ? headerHeight : headerHeight - 24}}/> 
+
+        <View style={{ flex:1, justifyContent: 'center', backgroundColor:'#fff' }}>
+          <Flip 
+            setModal={(bool) => setModalVisible(bool)} 
+            deck={questionsList} 
+            keyPercentage={key} 
+            color={color}
+          />
+        </View>
         
-  } else {
-    return <Intro show={(bool) => startApp(bool)}/>;
-  }
+      </Modal>
+    </View>
+  ) 
+        
+
 }
 
 const styles = StyleSheet.create({

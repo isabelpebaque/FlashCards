@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, ToastAndroid, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Dimensions, KeyboardAvoidingView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -40,7 +40,7 @@ export default function Flip(props){
         <View style={[styles.flipCardFront, {backgroundColor: props.color}]}>
           <Text style={{fontSize: 20}}>Question</Text>
           <TextInput
-            style={{ flex:1, width: '80%', textAlign: 'center',}}
+            style={styles.inputText}
             onChangeText={text => setQuestion(text)}
             value={question}
           /> 
@@ -56,7 +56,7 @@ export default function Flip(props){
         <View style={[styles.flipCardBack, {backgroundColor: props.color}]}>
         <Text style={{fontSize: 20}}>Answer</Text>
           <TextInput
-            style={{ flex:1, width: '80%', textAlign: 'center',}}
+            style={styles.inputText}
             onChangeText={text => setAnswer(text)}
             value={answer}
           /> 
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
 
   flipCardFront:{
     flex: 1,
-    height: Dimensions.get('window').height - 300,
+    height: Dimensions.get('window').height - 350,
     margin: 30,
     borderRadius: 20,
     alignItems: 'center',
@@ -84,10 +84,17 @@ const styles = StyleSheet.create({
   },
   flipCardBack:{
     flex: 1,
-    height: Dimensions.get('window').height - 300,
+    height: Dimensions.get('window').height - 350,
     margin: 30,
     borderRadius: 20,
     alignItems: 'center',
+  },
+  inputText:{
+    flex:1,
+    width: '80%',
+    textAlign: 'center',
+    flexWrap: 'wrap',
+    fontSize: 18
   },
   shadow: {
     shadowOffset: { width: 0, height: 2 },
