@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { StyleSheet, Text, View, Image  } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, Image, Dimensions  } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -35,7 +35,7 @@ export default function Intro(props){
   _renderItem = ({ item }) => {
     return (
       <View style={styles.container}>
-        <Image  source={item.image} />
+        <Image  style={styles.image} source={item.image} />
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.text}>{item.text}</Text>
       </View>
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image:{
-    width: 350,
-    height: 350
+    height: Dimensions.get('window').height - 300,
+    width: Dimensions.get('window').height - 300,
   }
 });
