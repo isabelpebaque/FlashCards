@@ -22,6 +22,7 @@ export default function NewDeckScreen({ navigation }) {
   const [number, setNumber] = useState(0);
   const [color, setColor] = useState(Colors.blue);
 
+  // Array of colors user can choose from
   const colors =[
     {
       color: Colors.blue
@@ -97,7 +98,6 @@ export default function NewDeckScreen({ navigation }) {
 
   // Function that creates toast msg
   const notifyMessage = (msg) => {
-    console.log('TOAST ', msg);
     
     Toast.show(msg, {
       duration: Toast.durations.LONG,
@@ -111,44 +111,44 @@ export default function NewDeckScreen({ navigation }) {
   }
 
    return (
-     <ScrollView style= {{ backgroundColor: '#FFF'}}>
-      <KeyboardAvoidingView 
+     <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : null}
         style={{ flex: 1 }}>
+        <ScrollView style= {{ backgroundColor: '#FFF'}}>
   
-        <SafeAreaView style={{flex:1, backgroundColor: '#fff', justifyContent: "flex-end"}}>
-          <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
-            <Text style={ styles.header }>Add a new deck!</Text>
-          </View>
-          <View style={{flex:2, justifyContent: 'center' }}>
-            <TextInput
-              placeholder={'Name..'}
-              style={[styles.nameInput, styles.shadow]}
-              onChangeText={text => setDeckName(text)}
-              value={deckName}
-            />  
-            <View style={{flexDirection: 'row', justifyContent: 'center', paddingTop:10}}>
-              {renderlist()}
+          <SafeAreaView style={{flex:1, backgroundColor: '#fff', justifyContent: "flex-end"}}>
+            <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
+              <Text style={ styles.header }>Add a new deck!</Text>
             </View>
-          </View>
-    
-          <View style={{flex:4, flexDirection:'row', justifyContent:'space-evenly'}}>
-            <NewFlip 
-              toast={(msg) => notifyMessage(msg)} 
-              color={color} style={styles.shadow} 
-              addQuestion={(questions, answer) => addCard(questions, answer)}
-            />
-          </View>
-    
-          <View style={{flex: 1, justifyContent: 'center'}}>
-            <Button 
-              title={'Save'}
-              onPress={() => saveDeck()}
-            />
-          </View>
-        </SafeAreaView>
+            <View style={{flex:2, justifyContent: 'center' }}>
+              <TextInput
+                placeholder={'Name..'}
+                style={[styles.nameInput, styles.shadow]}
+                onChangeText={text => setDeckName(text)}
+                value={deckName}
+              />  
+              <View style={{flexDirection: 'row', justifyContent: 'center', paddingTop:10}}>
+                {renderlist()}
+              </View>
+            </View>
+      
+            <View style={{flex:4, flexDirection:'row', justifyContent:'space-evenly'}}>
+              <NewFlip 
+                toast={(msg) => notifyMessage(msg)} 
+                color={color} style={styles.shadow} 
+                addQuestion={(questions, answer) => addCard(questions, answer)}
+              />
+            </View>
+      
+            <View style={{flex: 1, justifyContent: 'center'}}>
+              <Button 
+                title={'Save'}
+                onPress={() => saveDeck()}
+              />
+            </View>
+          </SafeAreaView>
+        </ScrollView>
       </KeyboardAvoidingView> 
-     </ScrollView>
    );   
 }
 

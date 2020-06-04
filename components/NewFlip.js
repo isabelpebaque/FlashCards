@@ -5,7 +5,6 @@ import { AntDesign } from '@expo/vector-icons';
 
 // npm imports
 import FlipCard from 'react-native-flip-card'
-// import Toast from 'react-native-root-toast';
 
 
 export default function Flip(props){

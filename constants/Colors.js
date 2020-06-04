@@ -1,3 +1,5 @@
+// Constants of the colors that will be used in the app
+
 export default {
   blue: '#5271ff',
   turquoise: '#5ce1e6',

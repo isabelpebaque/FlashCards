@@ -32,7 +32,7 @@ export default function Intro(props){
   ];
 
   // Render each view 
-  _renderItem = ({ item }) => {
+  renderItem = ({ item }) => {
     return (
       <View style={styles.container}>
         <Image  style={styles.image} source={item.image} />
@@ -43,13 +43,12 @@ export default function Intro(props){
   }
 
   // Sets variabel to true and sends it to Homescreen
-  _onDone = () => {
+  onDone = () => {
     props.show(true);
-    console.log('Done btn pressed', props);
   }
   
   // Design for done button
-  _renderDoneButton = () => {
+  renderDoneButton = () => {
     return (
       <View style={styles.button}>
         <Ionicons 
@@ -61,7 +60,7 @@ export default function Intro(props){
   };
 
   // Design for next buttons
-  _renderNextButton = () => {
+  renderNextButton = () => {
     return(
       <View style={styles.button}>
         <AntDesign 
@@ -74,11 +73,11 @@ export default function Intro(props){
   
   return(
     <AppIntroSlider 
-      renderItem={_renderItem}
+      renderItem={renderItem}
       data={slides}
-      onDone={_onDone}
-      renderDoneButton={_renderDoneButton}
-      renderNextButton={_renderNextButton}
+      onDone={onDone}
+      renderDoneButton={renderDoneButton}
+      renderNextButton={renderNextButton}
     />
   
   )
@@ -113,6 +112,6 @@ const styles = StyleSheet.create({
   },
   image:{
     height: Dimensions.get('window').height - 300,
-    width: Dimensions.get('window').height - 300,
+    width: Dimensions.get('window').height - 400,
   }
 });

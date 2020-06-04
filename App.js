@@ -10,12 +10,13 @@ import HomeScreen from './screens/HomeScreen';
 import NewDeckScreen from './screens/NewDeckScreen';
 import Intro from './components/Intro';
 
+// Create navigation
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export default function App() {
   const [showApp, setShowApp] = useState(false);
-  console.log('show app? ', showApp);
+  // console.log('show app? ', showApp);
 
   function Root(){
     return(
@@ -44,10 +45,12 @@ export default function App() {
     )
   }
 
+  // Sets the bool when user have done the intro
   const startApp = (bool) => {
     setShowApp(bool);
   }
-
+  
+  // Check if user has done the intro before showing the app
   if (showApp) {
     return (
       <NavigationContainer>

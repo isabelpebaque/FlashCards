@@ -11,8 +11,6 @@ import { useHeaderHeight } from '@react-navigation/stack';
 import Flip from '../components/Flip'
 
 
-const numColumns = 2;
-
 export default function HomeScreen({ navigation }) {
   useEffect(() => {
     fetchDecks();
@@ -100,7 +98,7 @@ export default function HomeScreen({ navigation }) {
     
   }
   
-
+  // Renders the view depending on if user have decks in database or not
   if (firstTimeText) {
     return (
       <View style={{flex:1,  alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFF'}}>
@@ -155,7 +153,7 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     paddingLeft: 10,
-    height: Dimensions.get('window').width / numColumns,
+    height: Dimensions.get('window').width / 2,
     borderRadius: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

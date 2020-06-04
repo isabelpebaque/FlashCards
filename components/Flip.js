@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, Alert, Dimensions, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, Text, View, Alert, Dimensions, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
 // npm imports
 import FlipCard from 'react-native-flip-card'
 import Swiper from 'react-native-deck-swiper'
 import firebase from './../firebase';
-import Toast from 'react-native-root-toast';
 
 export default function Flip(props){
 
@@ -15,14 +14,12 @@ export default function Flip(props){
   let questionsList = props.deck;
   let answers = 0;
 
-  console.log('PROPS: ', props);
-  
-
+  // Function that calculates the procentage that the user passes/answers correct when doing the cards
   const calculator = (amountOfQuestions, correctAnswers) => {
     return Math.round((100 * correctAnswers) / amountOfQuestions);
   }
 
-
+  // Desing of the card
   const renderCard = (card, index) => {
     let question = index+1;
 
@@ -49,6 +46,7 @@ export default function Flip(props){
     )
   }
 
+  // Functions that updates firebase object of procentage done
   const updateFirebase = () => {
     let percentage = calculator(questionsList.length, answers);
 
@@ -57,12 +55,12 @@ export default function Flip(props){
     });
   }
 
-
+  // Renders when all cards have been swiped
   const onSwipedAllCards = () => {
 
     updateFirebase();
     
-    console.log('all cards swiped');
+    // console.log('all cards swiped');
     Alert.alert(
       'All done!',
       `You completed ${calculator(questionsList.length, answers)} % of the questions`,
@@ -73,19 +71,15 @@ export default function Flip(props){
     );
   };
 
+  // Renders when user swipes left
   const swipeLeft = (item) => {
     console.log('You guessed wrong!', item); 
-    setTest(true);
-
-    
-
   };
   
-  
+  // Renders when user swipes right
   const swipeRight = (item) => {
     console.log('You guessed right!', item); 
     answers ++;
-    
   }
 
   return(
@@ -93,7 +87,6 @@ export default function Flip(props){
     <Swiper
       useViewOverflow={Platform.OS === 'ios'} 
       backgroundColor={'#fff'}
-      onSwiped={() => console.log('you swiped')}
       onSwipedLeft={(item) => swipeLeft(item)}
       onSwipedRight={(item) => swipeRight(item)}
       cards={questionsList}
